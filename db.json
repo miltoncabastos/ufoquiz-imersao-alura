@@ -1,28 +1,30 @@
 {
     "bg": "https://media2.s-nbcnews.com/j/newscms/2018_01/2280531/180103-ufo-illustration-mn-1015_0758c11fb1637ed3431613cef06cd246.fit-2000w.jpg",
     "title": "UfoQuiz do Miltão",
-    "description": "Teste os seus conhecimentos sobre Ufologia e vamos ver o quanto você sabe sobre os extraterrestres",
+    "description": "Teste os seus conhecimentos sobre Ufologia",
     "questions": [
       {
-        "image": "https://media.giphy.com/media/xUOxf3yDKCuwpOlT3i/giphy.gif",
-        "title": "Como fazer um seletor por id via CSS?",
-        "description": "Essa é pra aquecer",
-        "answer": 2,
+        "image": "https://64.media.tumblr.com/63c147db97943d035b56117ee40ef786/tumblr_nk75peIUNq1u7y7qno1_1280.gifv",
+        "title": "Em que ano ocorreu o famoso caso Roswell no Novo México?",
+        "description": "Essa é fácil heim!",
+        "answer": 1,
         "alternatives": [
-          ".elemento",
-          "*elemento",
-          "#elemento",
-          "%elemento"
+          "1932",
+          "1947",
+          "1954",
+          "1964"
         ]
       },
       {
-        "image": "https://media.giphy.com/media/13FrpeVH09Zrb2/giphy.gif",
-        "title": "Como fazer um background gradiente com css?",
-        "description": "Faz tempo em haha",
-        "answer": 0,
+        "image": "https://i.pinimg.com/originals/63/a2/33/63a233f891b5946411b91a36669f4ab8.jpg",
+        "title": "Qual é o caso sobre Ovnis mais bem documentado no Brasil?",
+        "description": "Não é o que parece ser!",
+        "answer": 3,
         "alternatives": [
-           "background: linear-gradient(#e66465, #9198e5);",
-           "background: gradient(#e66465, #9198e5);"
+           "Incidente em Varginha (1996)",
+           "Caso do Forte de Itaipu (1957)",
+           "A noite oficial dos OVNIs (1986)",
+           "Operação Prato (1977)"
         ]
       }
     ],
@@ -33,6 +35,7 @@
       "colors": {
         "primary": "#0d47a1",
         "secondary": "#29b6f6",
+        "tertiary": "#6573c3",
         "mainBg": "#171B35",
         "contrastText": "#FFFFFF",
         "wrong": "#FF5722",
@@ -40,4 +43,4 @@
       },
       "borderRadius": "4px"
     }
-  }
+}
