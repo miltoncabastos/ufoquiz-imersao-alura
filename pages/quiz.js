@@ -18,19 +18,27 @@ function QuestionWidget({
     handleSubmit
 }) {
 
-    const [choice, setChoice] = useState(null);
+    const [choice, setChoice] = useState();
+    const [sendingChoice, setSendingChoice] = useState(false);
 
     useEffect(() => {
-        setChoice(null);
+        setChoice();
+        setSendingChoice(false);
     }, [question])
 
     const Alternative = styled.div`
         background-color: ${({ theme, indexAlternative }) => {
-            if (choice != null && choice == indexAlternative)
-                if ( choice == question.answer)
+            if (sendingChoice && choice == indexAlternative)
+            {
+                if (choice == question.answer)
                     return theme.colors.success;
-                else
+                
                     return theme.colors.wrong;
+            }
+
+            if (choice != undefined && choice == indexAlternative)
+                return theme.colors.tertiary;
+
             return theme.colors.secondary;
         }};
         border: none;
@@ -45,13 +53,17 @@ function QuestionWidget({
         margin-top: 5px;
         width: 100%;
         &:hover{
-            background-color: ${({theme}) => choice == null && theme.colors.tertiary}
+            background-color: ${({theme}) => theme.colors.tertiary}
         }
     `;
 
     function verificarEscolha(escolha){
-        if (choice == null)
-            setChoice(escolha)
+        setChoice(escolha)
+    }
+
+    function sendChoice(){
+        setSendingChoice(true);
+        handleSubmit(choice);
     }
 
     return (
@@ -72,18 +84,56 @@ function QuestionWidget({
                 <p>{question.description}</p>
                 <form onSubmit={event => {
                     event.preventDefault()
-                    handleSubmit()
+                    sendChoice()
                 }}>
                     {question.alternatives.map((item, index) => {
                         return (
-                            <Alternative 
+                            <Alternative
+                                key={index}
                                 indexAlternative={index}
                                 onClick={() => verificarEscolha(index)} >
                                 {item}
                             </Alternative>)
                     })}
-                    <Button>
-                        {currentQuestion < totalQuestions ? "Próxima Pergunta" : "Voltar ao Início"}
+                    <Button type="submit" disabled={choice == undefined}>
+                        Enviar Resposta
+                    </Button>
+                </form>
+            </Widget.Content>
+        </Widget>
+    )
+}
+
+function FinalQuiz({
+    totalQuestions,
+    totalSuccess,
+    handleSubmit,
+}){
+    const emoji = String.fromCodePoint(0x0001F47D)
+    return (
+        <Widget>
+            <Widget.Header>
+                <h1>{db.title}</h1>
+            </Widget.Header>           
+            <Widget.Content>
+                <form onSubmit={event => {
+                    event.preventDefault();
+                    handleSubmit();
+                }}>
+                    <h3>Você finalizou o quiz!</h3>
+
+                    {totalSuccess == totalQuestions && <>
+                        <p>Fantástico, você acertou todas as perguntas!</p>
+                        <p>Tem certeza que você é mesmo deste mundo?</p>
+                    </>}
+
+                    {totalSuccess != totalQuestions && <>
+                            <p>Você acertou {totalSuccess} de {totalQuestions} respostas</p>
+                            <p>Treine mais para ter um contato imediato {emoji}</p>
+                    </>}
+                    
+                    <Button type='submit'>
+                        Voltar ao Início
                     </Button>
                 </form>
             </Widget.Content>
@@ -93,42 +143,54 @@ function QuestionWidget({
 
 export default function QuizPage() {
     const router = useRouter();
+
     const questions = db.questions;
     const totalQuestions = questions.length;
-
+    
+    const [totalSuccess, setTotalSuccess] = useState(0);
     const [indexQuestion, setIndexQuestion] = useState(0);
     const [question, setQuestion] = useState(questions[0]);
+    const [endGame, setEndGame] = useState(false);
     
     useEffect(() => {
         setQuestion(questions[indexQuestion]);
     }, [indexQuestion])
 
-    function verificarEscolha() {
-        alert('você escolheu uma resposta')
-    }
-
-    function proximaQuestion() {
-        const nextIndexQuestion = indexQuestion + 1;
-        
-        if (nextIndexQuestion >= totalQuestions){
-            router.push('/');
-            return;
-        }
-
-        setIndexQuestion(nextIndexQuestion);
+    function goHome(){
+        router.push('/');
     }
     
+    function sendQuestion(choise) {
+        setTimeout(() => {
+            if (choise == question.answer){
+                const total = totalSuccess + 1;
+                setTotalSuccess(total)
+            }
+            
+            const nextIndexQuestion = indexQuestion + 1;
+            
+            if (nextIndexQuestion >= totalQuestions)
+            setEndGame(true);
+            else
+            setIndexQuestion(nextIndexQuestion);
+        }, 1 * 1000);
+    }
+
     return (
         <QuizBackground backgroundImage={db.bg}>
             <QuizContainer>
                 <QuizLogo />
-                <QuestionWidget 
+                {!endGame && <QuestionWidget 
                     question={question}
                     currentQuestion={indexQuestion + 1}
                     totalQuestions={totalQuestions}
-                    handleSubmit={proximaQuestion}
-                    handleChoise={verificarEscolha}
-                />
+                    handleSubmit={sendQuestion}
+                />}
+                {endGame && <FinalQuiz
+                    totalQuestions={totalQuestions}
+                    totalSuccess={totalSuccess}
+                    handleSubmit={goHome}
+                />}
                 <Footer />
             </QuizContainer>
             <GitHubCorner projectUrl="https://github.com/miltoncabastos" />
